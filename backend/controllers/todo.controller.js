@@ -18,7 +18,9 @@ async function getAllTodos(req, res, next) {
 async function createTodo(req, res, next) {
 
     const todoText = req.body.text;
-    const todo = new Todo(todoText);
+    const todoCategory = req.body.category;
+    const createdDate = req.body.createdDate;
+    const todo = new Todo(todoText, todoCategory, createdDate);
     let insertedId;
     try {
         const result = await todo.save();
@@ -36,10 +38,12 @@ async function createTodo(req, res, next) {
 };
 
 async function updateTodo(req, res, next) {
-    const todoText = req.body.text;
+    const todoText = req.body.newText;
+    const todoCategory = req.body.category;
+    const createdDate = req.body.createdDate
     const todoId = req.params.id;   
 
-    const updatedTodo = new Todo(todoText, todoId);
+    const updatedTodo = new Todo(todoText, todoCategory, createdDate, todoId);
 
     try {
         await updatedTodo.save();
@@ -56,7 +60,7 @@ async function updateTodo(req, res, next) {
 async function deleteTodo(req, res, next) {
     const todoId = req.params.id; 
 
-    const todo = new Todo(null, todoId);
+    const todo = new Todo(null, null, null, todoId);
 
     try {
         await todo.delete();
