@@ -4,6 +4,13 @@ const inputDateElem = document.getElementById("date-input");
 
 let editedTodoElement;
 
+function sortFunction(a, b){  
+    var dateA = a.createdDate;
+    var dateB = b.createdDate;
+    
+    return dateA - dateB;
+}; 
+
 async function loadTodos() {
     let reqres;
     try {
@@ -20,10 +27,12 @@ async function loadTodos() {
 
     const responseData = await reqres.json();
     const todos = responseData.todos;
-
+    todos.sort(sortFunction);
+      
     for(const todo of todos) {
-        createTodoListItem(todo.text, todo.category, todo.createdDate , todo.id);
+      createTodoListItem(todo.text, todo.category, todo.createdDate , todo.id);        
     }
+    
 }
 
 function createTodoListItem(todoText, todoCategory, createdDate, todoId) {
@@ -78,7 +87,8 @@ function createTodoListItem(todoText, todoCategory, createdDate, todoId) {
     todoItemListElem.appendChild(categoryInputHiddenElem);
     todoItemListElem.appendChild(dateInputHiddenElem);
     
-    todosListElem.appendChild(todoItemListElem);
+    todosListElem.prepend(todoItemListElem);
+
 }
 
 async function createTodo(todoText, todoCategory, createdDate) {
@@ -109,7 +119,8 @@ async function createTodo(todoText, todoCategory, createdDate) {
 
   todoFormElem.querySelector('input[name="text"]').value = "";
   todoFormElem.querySelector('input[name="category"]:checked').checked = false;
-
+  console.log(responseData);
+  
   createTodoListItem(todoText, todoCategory, createdDate, todoId);
 }
 
@@ -207,7 +218,7 @@ function saveTodo(event) {
   const enteredCategory = formInput.get("category");
   const createdDate = formInput.get("createdDate");
 
-  if (!enteredTodoText || !enteredCategory || !createdDate) {
+  if (!enteredTodoText || !enteredCategory) {
     alert("Please, add some text and pick a category!");
     return;
   }
