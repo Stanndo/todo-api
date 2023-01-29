@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToDo List App</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link rel="stylesheet" href="./style/main.css">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js" ></script>
+    <script src="./scripts/app.js" defer></script>
+</head>
+<body>
+    <main class="app" id="todos-app">
+        <section class="create-todo">
+            <h3>Create a TODO</h3>
+            <form id="new-todo-form" @submit="saveTodo">
+                <label for="text"><h4>Todo text</h4></label>
+                <input type="text" id="text" v-model="todoText" placeholder="e.g. Go shopping" required />
+                
+                <h4>Pick a category</h4>
+                <div class="options">
+                    <label>
+                        <input type="radio" name="category" id="category1" value="business" v-model="todoCategory">
+                        <span class="bubble business"></span>
+                        <div>Business</div>
+                    </label>
+                    
+                    <label>
+                        <input type="radio" name="category" id="category2" value="personal" v-model="todoCategory">
+                        <span class="bubble personal"></span>
+                        <div>Personal</div>
+                    </label>
+                </div>
+                <input type="hidden" name="createdDate" id="date-input" v-model="createdAt">
+                <input type="submit" value="Save">
+            </form>
+        </section>
+
+        <section>
+            <h3>TODO LIST</h3>
+            
+            <ul class="list" id="todos-list">
+                <transition-group enter-active-class="animate__bounceIn" leave-active-class="animate__bounceOut">
+                <li class="todo-item" v-for="(todo, index) in todos" :key="index">
+                    <label>
+                       <!--  <input type="checkbox"> -->
+                        <span class="bubble" :class="{'business': todo.category == 'business', 'personal': todo.category == 'personal'}"></span>   
+                    </label>
+
+                    <div class="todo-content" @dblclick="startUpdateTodo(todo.id)">
+                        <span v-if="!todo.editable">{{ todo.text }}</span>
+                        <input v-else 
+                            type="text" 
+                            v-model="todo.text" 
+                            :class="{ 'input-focus': focused }" 
+                            @focus="focused = true" 
+                            @blur="doneUpdating(todo.id)"
+                            @keyup.enter="doneUpdating(todo.id)"    
+                            @keyup.esc="cancelEditing(todo.id)"
+                            v-focus
+                            >
+                    </div>
+
+                    <div class="actions">
+                        <button class="edit" @click="startUpdateTodo(todo.id)">Edit</button>
+                        <button class="delete" @click="deleteTodo(todo.id)">Delete</button>
+                    </div>
+                </li>
+               </transition-group>
+            </ul>
+            
+        </section>
+
+    </main>
+</body>
+</html>

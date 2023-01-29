@@ -21,6 +21,7 @@ class Todo {
   // create or update todos
   save() {
     const todoId = new mongodb.ObjectId(this.id);
+    // Updating
     if (this.id) {
       return db
         .getDb()
@@ -36,6 +37,7 @@ class Todo {
           }
         );
     } else {
+    // Creating  
       return db.getDb().collection("todos").insertOne({
         text: this.text,
         category: this.category,
